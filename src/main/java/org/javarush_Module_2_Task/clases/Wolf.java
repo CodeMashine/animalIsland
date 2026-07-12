@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Wolf extends Animal {
+public class Wolf extends Predator {
 
 	private static AtomicInteger count = new AtomicInteger(0);
 	private final static String NAME = "Wolf";
@@ -18,7 +18,7 @@ public class Wolf extends Animal {
 	private final static int READY_TO_MULL_AFTER = 3;
 	private final static double NEED_TO_EAT = 3;
 	private final static double WEIGHT = 50;
-	private final static Map<Class<? extends Unit> , Integer> FOODLIST = Map.of(Rabbit.class, 60);
+	private final static Map<Class<? extends Unit> , Integer> FOOD_LIST = Map.of(Rabbit.class, 60);
 	private final static int HUNT_ATTEMPTS = 3 ;
 
 	private final int id;
@@ -37,8 +37,13 @@ public class Wolf extends Animal {
 	}
 
 	@Override
-	public void eat() {
+	public double getFoodNeedToEat() {
+		return NEED_TO_EAT;
+	}
 
+	@Override
+	public Map<Class<? extends Unit>, Integer> getFoodList() {
+		return FOOD_LIST;
 	}
 
 	@Override
@@ -64,5 +69,10 @@ public class Wolf extends Animal {
 	public String toString() {
 		return String.format("Wolf id - %d , age %d , sex - %s , in cell - x: %d , y : %d", this.id, this.age.get(),
 				this.sex, this.getX(), this.getY());
+	}
+
+	@Override
+	public double getWeight() {
+		return WEIGHT;
 	}
 }

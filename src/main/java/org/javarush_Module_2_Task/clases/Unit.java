@@ -6,12 +6,12 @@ import org.javarush_Module_2_Task.interfaces.World;
 public abstract class Unit implements Multiplyble {
 	protected int x;
 	protected int y;
-	protected World world ;
+	protected World world;
 
-	public Unit(int x, int y , World island) {
+	public Unit(int x, int y, World world) {
 		this.x = x;
 		this.y = y;
-		this.world = island ;
+		this.world = world;
 	}
 
 	public int getX() {
@@ -29,4 +29,7 @@ public abstract class Unit implements Multiplyble {
 	public void setY(int y) {
 		this.y = y;
 	}
+
+	public abstract double getWeight();
+
 }

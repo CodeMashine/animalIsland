@@ -3,13 +3,15 @@ package org.javarush_Module_2_Task.clases;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameCell {
 	private final int x;
 	private final int y;
-	private final CopyOnWriteArrayList<Unit> units = new CopyOnWriteArrayList<>();
+//	private final CopyOnWriteArrayList<Unit> units = new CopyOnWriteArrayList<>();
+	private final ConcurrentLinkedDeque<Unit> units = new ConcurrentLinkedDeque<>();
 
 	private static final Map<Class<? extends Unit>, Integer> maxCountOfUnits = new HashMap<>();
 	private final Map<Class<? extends Unit>, AtomicInteger> currentCountOfUnits = new ConcurrentHashMap<>();
@@ -65,7 +67,7 @@ public class GameCell {
 		return maxCountOfUnits ;
 	}
 
-	public CopyOnWriteArrayList<Unit> getUnits() {
+	public ConcurrentLinkedDeque<Unit> getUnits() {
 		return units;
 	}
 

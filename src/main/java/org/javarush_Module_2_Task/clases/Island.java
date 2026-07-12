@@ -1,7 +1,7 @@
 package org.javarush_Module_2_Task.clases;
 
 import org.javarush_Module_2_Task.data.SEX;
-import org.javarush_Module_2_Task.data.StartSettings;
+import org.javarush_Module_2_Task.data.Settings;
 import org.javarush_Module_2_Task.errors.AnimalIslandException;
 import org.javarush_Module_2_Task.interfaces.World;
 
@@ -61,7 +61,7 @@ public class Island implements World {
 	private void fillCell(GameCell cell, int maxValueOfUnits, Class<? extends Unit> unit) {
 		try (ExecutorService threadPool = Executors.newWorkStealingPool()) {
 			int currentCountOfUnit = ThreadLocalRandom.current().nextInt(
-					maxValueOfUnits + 1) / StartSettings.unitAmountCoef;
+					maxValueOfUnits + 1) / Settings.unitAmountCoef;
 			int x = cell.getX();
 			int y = cell.getY();
 			for (int i = 0; i < currentCountOfUnit; i++) {
