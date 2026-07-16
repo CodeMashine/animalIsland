@@ -1,12 +1,9 @@
 package org.javarush_Module_2_Task.clases;
 
 import org.javarush_Module_2_Task.data.SEX;
-import org.javarush_Module_2_Task.interfaces.World;
+import org.javarush_Module_2_Task.interfaces.GameFiled;
 
-import java.awt.*;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Rabbit extends Herbivore {
@@ -25,40 +22,50 @@ public class Rabbit extends Herbivore {
 
 //	private AtomicInteger age = new AtomicInteger(0);
 
-	public Rabbit(int x, int y, SEX sex, World world) {
-		super(x, y, sex, world );
+	public Rabbit(int x, int y, SEX sex, GameFiled gameFiled, GameCell cell) {
+		super(x, y, sex, gameFiled, cell);
 		this.id = count.incrementAndGet();
 
 
-		System.out.println("create " + this);
+//		System.out.println("create " + this);
 	}
 
 	public int getAge() {
 		return this.age.get();
 	}
 
+//	@Override
+//	public void eat() {
+//		GameCell currentCell = world.getCell(getX(), getY());
+//
+//		ConcurrentLinkedDeque<Unit> units = currentCell.getUnits();
+//		Unit[] food = units.stream()
+//				.filter(u -> FOOD_LIST.containsKey(u.getClass()))
+//				.toArray(Unit[]::new);
+//
+//		while (this.eaten < NEED_TO_EAT) {
+//
+//			if(food.length == 0) {
+//				this.daysWOEat +=1;
+//				break;
+//			}
+//
+//			for(Unit u : food) {
+//				if(units.remove(u)) {
+//					eaten++;
+//				}
+//			}
+//		}
+//	}
+
 	@Override
-	public void eat() {
-		GameCell currentCell = world.getCell(getX(), getY());
+	public void multiply(GameFiled gameFiled) {
 
-		ConcurrentLinkedDeque<Unit> units = currentCell.getUnits();
-		Unit[] food = units.stream()
-				.filter(u -> FOOD_LIST.containsKey(u.getClass()))
-				.toArray(Unit[]::new);
+	}
 
-		while (this.eaten < NEED_TO_EAT) {
-
-			if(food.length == 0) {
-				this.daysWOEat +=1;
-				break;
-			}
-
-			for(Unit u : food) {
-				if(units.remove(u)) {
-					eaten++;
-				}
-			}
-		}
+	@Override
+	protected <T extends Animal> T getChild() {
+		return null;
 	}
 
 	@Override
@@ -66,12 +73,17 @@ public class Rabbit extends Herbivore {
 
 	}
 
+//	@Override
+//	public void multiply() {
+//		GameCell currentCell = world.getCell(getX(), getY());
+//	CopyOnWriteArrayList<Unit> units = currentCell.getUnits();
+//
+//
+//	}
+
 	@Override
-	public void multiply() {
-		GameCell currentCell = world.getCell(getX(), getY());
-//		CopyOnWriteArrayList<Unit> units = currentCell.getUnits();
-
-
+	protected boolean isReadyToMul() {
+		return this.daysSinceLastMull.get() >= READY_TO_MULL_AFTER;
 	}
 
 	@Override

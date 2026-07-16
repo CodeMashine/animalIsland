@@ -2,15 +2,15 @@ package org.javarush_Module_2_Task.clases;
 
 import org.javarush_Module_2_Task.data.SEX;
 import org.javarush_Module_2_Task.data.Settings;
-import org.javarush_Module_2_Task.interfaces.World;
+import org.javarush_Module_2_Task.interfaces.GameFiled;
 
 public abstract class Herbivore extends Animal {
-	public Herbivore(int x, int y, SEX sex, World island) {
-		super(x, y, sex, island);
+	public Herbivore(int x, int y, SEX sex, GameFiled gameFiled, GameCell cell) {
+		super(x, y, sex, gameFiled, cell);
 	}
 
 	@Override
-	public int getHuntTry(){
+	protected int getHuntTry() {
 		return Settings.HuntTryHerbivore;
 	}
 }
