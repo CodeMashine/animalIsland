@@ -1,10 +1,10 @@
 package org.javarush_Module_2_Task.clases;
 
-import org.javarush_Module_2_Task.interfaces.GameFiled;
+import org.javarush_Module_2_Task.interfaces.GameField;
 
 public abstract class Plant extends Unit{
-	public Plant(int x, int y, GameFiled gameFiled , GameCell cell) {
-		super(x, y, gameFiled , cell);
+	public Plant(GameCell cell) {
+		super(cell);
 	}
 
 	public void dead() {}

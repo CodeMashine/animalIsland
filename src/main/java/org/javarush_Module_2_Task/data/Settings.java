@@ -4,4 +4,5 @@ public interface Settings {
 	int unitAmountCoef = 3 ;
 	int HuntTryHerbivore = Integer.MAX_VALUE ;
 	int HuntTryPredator = 7 ;
+	int ThreadsAmount = 4;
 }

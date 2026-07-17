@@ -1,7 +1,7 @@
 package org.javarush_Module_2_Task.clases;
 
 import org.javarush_Module_2_Task.data.SEX;
-import org.javarush_Module_2_Task.interfaces.GameFiled;
+import org.javarush_Module_2_Task.interfaces.GameField;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,8 +22,8 @@ public class Rabbit extends Herbivore {
 
 //	private AtomicInteger age = new AtomicInteger(0);
 
-	public Rabbit(int x, int y, SEX sex, GameFiled gameFiled, GameCell cell) {
-		super(x, y, sex, gameFiled, cell);
+	public Rabbit(GameCell cell,SEX sex) {
+		super(cell,sex);
 		this.id = count.incrementAndGet();
 
 
@@ -59,7 +59,7 @@ public class Rabbit extends Herbivore {
 //	}
 
 	@Override
-	public void multiply(GameFiled gameFiled) {
+	public void multiply(GameField gameField) {
 
 	}
 
@@ -104,6 +104,6 @@ public class Rabbit extends Herbivore {
 	@Override
 	public String toString() {
 		return String.format("Rabbit id - %d , age %d , sex - %s , in cell - x: %d , y : %d", this.id, this.age.get(),
-				this.sex, this.getX(), this.getY());
+				this.sex, cell.getX(), cell.getY());
 	}
 }

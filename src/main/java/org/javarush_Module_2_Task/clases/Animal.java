@@ -4,7 +4,7 @@ import org.javarush_Module_2_Task.data.SEX;
 import org.javarush_Module_2_Task.interfaces.Eating;
 import org.javarush_Module_2_Task.interfaces.Moveble;
 import org.javarush_Module_2_Task.interfaces.Multiplyble;
-import org.javarush_Module_2_Task.interfaces.GameFiled;
+import org.javarush_Module_2_Task.interfaces.GameField;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -20,8 +20,8 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 	protected boolean isDead = false;
 
 
-	public Animal(int x, int y, SEX sex, GameFiled gameFiled, GameCell cell) {
-		super(x, y, gameFiled,cell);
+	public Animal(GameCell cell, SEX sex) {
+		super(cell);
 		this.sex = sex;
 	}
 
@@ -31,27 +31,34 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 		int huntTry = getHuntTry();
 		double needToEat = getFoodNeedToEat();
 
-		while (eaten < needToEat && huntTry > currentHuntTry) {
-			ConcurrentLinkedDeque<Unit> units = cell.getUnits();
-			Unit[] food = units.stream().filter(u -> getFoodList().containsKey(u.getClass())).toArray(
-					size -> new Unit[size]);
+		ConcurrentLinkedDeque<Unit> units = cell.getUnits();
+		Unit[] food = units.stream().filter(u -> getFoodList().containsKey(u.getClass())).toArray(
+				size -> new Unit[size]);
 
-			if (food.length == 0) {
+		if (food.length == 0) {
+			daysWOEat += 1;
+			return;
+		}
+
+		for (Unit victim : food) {
+			if (eaten >= needToEat && huntTry <= currentHuntTry) {
 				break;
 			}
+			int chance = getFoodList().get(victim.getClass());
+			int fact = ThreadLocalRandom.current().nextInt(100);
 
-			for (Unit victim : food) {
-				int chance = getFoodList().get(victim.getClass());
-				int fact = ThreadLocalRandom.current().nextInt(100);
-
-				if (fact < chance && cell.remove(victim)) {
-					double victimWeight = victim.getWeight();
-					eaten += victimWeight;
-					System.out.println(this + " eat " + victim);
-				}
-				currentHuntTry += 1;
+			if (fact < chance && cell.remove(victim)) {
+				double victimWeight = victim.getWeight();
+				eaten += victimWeight;
+				System.out.println(this + " eat " + victim + eaten + " and need" + this.getFoodNeedToEat());
 			}
+
+			if (eaten >= needToEat) {
+				break;
+			}
+			currentHuntTry += 1;
 		}
+
 		if (eaten >= getFoodNeedToEat()) {
 			daysWOEat = 0;
 		} else {
@@ -85,7 +92,7 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 //		if (!haveChild) {
 //			this.daysSinceLastMull.incrementAndGet();
 //		}
-
+		System.out.println(this + " multiply");
 	}
 
 

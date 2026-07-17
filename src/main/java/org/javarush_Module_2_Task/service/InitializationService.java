@@ -1,10 +1,10 @@
 package org.javarush_Module_2_Task.service;
 
-import org.javarush_Module_2_Task.interfaces.GameFiled;
+import org.javarush_Module_2_Task.interfaces.GameField;
 
 public class InitializationService {
 
-	public InitializationService(GameFiled gameFiled) {
+	public InitializationService(GameField gameField) {
 
 	}
 

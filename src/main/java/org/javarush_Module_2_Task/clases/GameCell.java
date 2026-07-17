@@ -17,15 +17,13 @@ import java.util.stream.Collectors;
 public class GameCell {
 	private final int x;
 	private final int y;
-	//	private final CopyOnWriteArrayList<Unit> units = new CopyOnWriteArrayList<>();
 	private final ConcurrentLinkedDeque<Unit> units = new ConcurrentLinkedDeque<>();
 
 	private static final Map<Class<? extends Unit>, Integer> maxCountOfUnits = new HashMap<>();
 	private final Map<Class<? extends Unit>, AtomicInteger> currentCountOfUnits = new ConcurrentHashMap<>();
-//	private final Map<Class<? extends Unit>, Integer> maxCountOfUnits = Map.of(Wolf.class, 30 , Plant.class, 500,Rabbit.class, 150);
 
 	static {
-		maxCountOfUnits.put(Wolf.class, 30);
+//		maxCountOfUnits.put(Wolf.class, 30);
 		maxCountOfUnits.put(Grass.class, 500);
 		maxCountOfUnits.put(Rabbit.class, 150);
 	}
@@ -84,9 +82,7 @@ public class GameCell {
 //	}
 
 
-
-
-		public Map<Class<? extends Unit>, Integer> getMaxCountOfUnits() {
+	public static Map<Class<? extends Unit>, Integer> getMaxCountOfUnits() {
 		return maxCountOfUnits;
 	}
 
@@ -95,13 +91,10 @@ public class GameCell {
 	}
 
 	public Animal[] getAnimals() {
-		return units.stream()
-				.filter(u->u instanceof Animal)
-				.map(u->(Animal)u)
-				.toArray(size -> new Animal[size]);
+		return units.stream().filter(u -> u instanceof Animal).map(u -> (Animal) u).toArray(size -> new Animal[size]);
 	}
 
-	public void unitEats(ExecutorService threadPool ) {
+	public void unitEats(ExecutorService threadPool) {
 		showUnits();
 		for (Unit unit : units) {
 			if (unit instanceof Animal animal)
@@ -116,7 +109,7 @@ public class GameCell {
 		final ExecutorService threadPool = Executors.newWorkStealingPool();
 
 		for (Unit unit : units) {
-				threadPool.execute(() -> unit.multiply());
+			threadPool.execute(() -> unit.multiply());
 		}
 
 		threadPool.shutdown();
@@ -145,9 +138,7 @@ public class GameCell {
 		sB.append("GameCell{" + "x=" + x + ", y=" + y + "}\n");
 		sB.append("Units : \n");
 		for (Unit unit : units) {
-			if (unit instanceof Wolf) {
-				sB.append(unit.toString());
-			}
+				sB.append(unit.toString()+"\n");
 		}
 		return sB.toString();
 	}

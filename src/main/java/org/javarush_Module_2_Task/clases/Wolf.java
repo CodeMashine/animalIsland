@@ -1,7 +1,7 @@
 package org.javarush_Module_2_Task.clases;
 
 import org.javarush_Module_2_Task.data.SEX;
-import org.javarush_Module_2_Task.interfaces.GameFiled;
+import org.javarush_Module_2_Task.interfaces.GameField;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,8 +26,8 @@ public class Wolf extends Predator {
 	private double eaten = 3;
 
 
-	public Wolf(int x, int y, SEX sex, GameFiled island , GameCell cell) {
-		super(x, y, sex, island , cell);
+	public Wolf(GameCell cell,SEX sex) {
+		super(cell,sex);
 		this.id = count.incrementAndGet();
 //		System.out.println("create " + this);
 	}
@@ -48,17 +48,6 @@ public class Wolf extends Predator {
 
 	@Override
 	public void move() {
-		if (this.eaten >= NEED_TO_EAT) {
-			return;
-		}
-		int currentSpeed = ThreadLocalRandom.current().nextInt(Wolf.SPEED + 1);
-
-		int x = this.x;
-		int y = this.y;
-
-		if (x > currentSpeed) {
-
-		}
 
 	}
 
@@ -76,7 +65,7 @@ public class Wolf extends Predator {
 	}
 
 	@Override
-	public void multiply(GameFiled gameFiled) {
+	public void multiply(GameField gameField) {
 
 	}
 
@@ -89,6 +78,6 @@ public class Wolf extends Predator {
 	@Override
 	public String toString() {
 		return String.format("Wolf id - %d , age %d , sex - %s , in cell - x: %d , y : %d", this.id, this.age.get(),
-				this.sex, this.getX(), this.getY());
+				this.sex, cell.getX(), cell.getY());
 	}
 }
