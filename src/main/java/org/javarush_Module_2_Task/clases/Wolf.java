@@ -25,10 +25,15 @@ public class Wolf extends Predator {
 	private AtomicInteger age = new AtomicInteger(0);
 
 
-	public Wolf(GameCell cell,SEX sex) {
-		super(cell,sex);
+	public Wolf(GameCell cell, SEX sex) {
+		super(cell, sex);
 		this.id = count.incrementAndGet();
 	}
+
+	public String getName() {
+		return this.NAME;
+	}
+
 
 	@Override
 	protected int getSpeed() {
@@ -51,7 +56,7 @@ public class Wolf extends Predator {
 
 	@Override
 	protected boolean isReadyToMul() {
-		return false;
+		return this.daysSinceLastMull.get() >= READY_TO_MULL_AFTER;
 	}
 
 	@Override

@@ -26,6 +26,11 @@ public class Rabbit extends Herbivore {
 		this.id = countRabbit.getAndIncrement();
 	}
 
+	@Override
+	public String getName() {
+		return this.NAME;
+	}
+
 	public int getAge() {
 		return this.age.get();
 	}

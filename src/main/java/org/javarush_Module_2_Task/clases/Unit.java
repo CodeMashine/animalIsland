@@ -1,33 +1,26 @@
 package org.javarush_Module_2_Task.clases;
 
+import org.javarush_Module_2_Task.interfaces.Aging;
 import org.javarush_Module_2_Task.interfaces.Multiplyble;
 import org.javarush_Module_2_Task.interfaces.GameField;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class Unit implements Multiplyble {
+public abstract class Unit implements Multiplyble, Aging {
 	protected GameCell cell;
+	protected String name;
 	protected double weight;
+	protected int age;
 	protected boolean isDead = false;
 
 	public Unit(GameCell cell) {
 		this.cell = cell;
 	}
 
-	public void setWeight(double weight) {
-		if (weight <= 0) {
-			this.remove();
-			return;
-		}
-		this.weight = weight;
-	}
-
-	public void remove() {
-		cell.remove(this);
-	}
-
 	public abstract double getWeight();
+
+	public abstract String getName();
 
 	@Override
 	public void multiply() {
@@ -40,5 +33,8 @@ public abstract class Unit implements Multiplyble {
 		}
 	}
 
-
+	@Override
+	public void getOlder() {
+		this.age += 1;
+	}
 }

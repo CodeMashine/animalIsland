@@ -5,6 +5,7 @@ import org.javarush_Module_2_Task.clases.GameCell;
 import org.javarush_Module_2_Task.clases.Unit;
 import org.javarush_Module_2_Task.data.Settings;
 import org.javarush_Module_2_Task.interfaces.GameField;
+import org.javarush_Module_2_Task.interfaces.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,13 @@ import java.util.function.Consumer;
 
 public class LifeCycle {
 	private GameField gameField;
+	private Statistic statistic;
+	private View view;
 
-
-	public LifeCycle(GameField gameField) {
+	public LifeCycle(GameField gameField , Statistic statistic , View view) {
 		this.gameField = gameField;
+		this.statistic = statistic;
+		this.view = view;
 	}
 
 	public void start(int days) {
@@ -26,12 +30,38 @@ public class LifeCycle {
 
 		for (int i = 0; i < days; i++) {
 			System.out.println("Day " + i + "-----------------");
-			executeAnimalActions(executorService, Animal::eat);
-			executeMulActions(executorService, Unit::multiply);
-			executeAnimalActions(executorService, Animal::move);
-
+			executeEatActions(executorService);
+			executeMulActions(executorService);
+			executeMoveActions(executorService);
+			executeStatisticAction(executorService);
+			view.display(statistic);
+			executeGetOlderActions(executorService);
+//			executeUnitActions(executorService, Unit::multiply);
+//			view.show();
 		}
 		executorService.shutdown();
+	}
+
+	private void executeGetOlderActions(ExecutorService executorService) {
+		executeUnitActions(executorService, Unit::getOlder);
+	}
+
+
+	private void executeEatActions(ExecutorService executorService) {
+		executeAnimalActions(executorService, Animal::eat);
+	}
+
+	private void executeMulActions(ExecutorService executorService) {
+		executeUnitActions(executorService, Unit::multiply);
+	}
+
+	private void executeMoveActions(ExecutorService executorService) {
+		executeAnimalActions(executorService, Animal::move);
+	}
+
+	private void executeStatisticAction(ExecutorService executorService) {
+		Consumer<Unit> statAction = u -> statistic.put(u.getName());
+		executeUnitActions(executorService, statAction);
 	}
 
 
@@ -52,7 +82,7 @@ public class LifeCycle {
 		}
 	}
 
-	private void executeMulActions(ExecutorService executorService, Consumer<Unit> action) {
+	private void executeUnitActions(ExecutorService executorService, Consumer<Unit> action) {
 		GameCell[][] grid = gameField.getGrid();
 		List<Callable<Void>> taskList = new ArrayList<>();
 		for (int x = 0; x < grid.length; x++) {
@@ -67,7 +97,12 @@ public class LifeCycle {
 				executeActions(executorService, taskList);
 			}
 		}
+
 	}
+
+
+
+
 
 	private void executeActions(ExecutorService executorService, List<Callable<Void>> taskList) {
 		try {

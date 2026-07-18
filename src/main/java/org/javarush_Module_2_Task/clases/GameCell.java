@@ -88,10 +88,10 @@ public class GameCell {
 
 		StringBuilder sB = new StringBuilder();
 		sB.append("GameCell{" + "x=" + x + ", y=" + y + "}\n");
-		sB.append("Units : \n");
-		for (Unit unit : units) {
-				sB.append(unit.toString()+"\n");
-		}
+//		sB.append("Units : \n");
+//		for (Unit unit : units) {
+//				sB.append(unit.toString()+"\n");
+//		}
 		return sB.toString();
 	}
 }

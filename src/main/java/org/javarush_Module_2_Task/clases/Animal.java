@@ -95,21 +95,25 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 		}
 	}
 
+	@Override
 	public void move() {
-//		if(eaten >= getFoodNeedToEat()) {
-//			return;
-//		};
+		if(eaten >= getFoodNeedToEat()) {
+			return;
+		};
 
 		List<GameCell> posibleDestCell = cell.getNeighbours();
 		GameCell currentCell = cell;
+		GameCell previousCell = cell;
 
 		for (int i = 0 ; i < this.getSpeed() ; i++ ){
-			int posibleDestCellIndex = ThreadLocalRandom.current().nextInt(posibleDestCell.size());
-			currentCell = posibleDestCell.get(posibleDestCellIndex);
+			int possibleDestCellIndex = ThreadLocalRandom.current().nextInt(posibleDestCell.size());
+			currentCell = posibleDestCell.get(possibleDestCellIndex);
 		}
-		currentCell.add(this);
-
-
+		if(currentCell.add(this)){
+			this.cell = currentCell;
+			previousCell.remove(this);
+//			System.out.println(this + " go from " + previousCell +  " to " + currentCell);
+		}
 	}
 
 	abstract protected int getSpeed();
@@ -135,6 +139,13 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 
 	private SEX getSex() {
 		return this.sex;
+	}
+
+	@Override
+	public void getOlder() {
+		super.getOlder();
+		this.eaten = 0;
+		this.daysSinceLastMull.incrementAndGet();
 	}
 
 	public void dead() {
