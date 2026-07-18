@@ -19,17 +19,20 @@ public class Wolf extends Predator {
 	private final static double NEED_TO_EAT = 3;
 	private final static double WEIGHT = 50;
 	private final static Map<Class<? extends Unit>, Integer> FOOD_LIST = Map.of(Rabbit.class, 60);
-	private final static int HUNT_ATTEMPTS = 3;
+//	private final static int HUNT_ATTEMPTS = 3;
 
 	private final int id;
 	private AtomicInteger age = new AtomicInteger(0);
-	private double eaten = 3;
 
 
 	public Wolf(GameCell cell,SEX sex) {
 		super(cell,sex);
 		this.id = count.incrementAndGet();
-//		System.out.println("create " + this);
+	}
+
+	@Override
+	protected int getSpeed() {
+		return SPEED;
 	}
 
 	public int getAge() {
@@ -47,28 +50,9 @@ public class Wolf extends Predator {
 	}
 
 	@Override
-	public void move() {
-
-	}
-
-	//	@Override
-//	public void multiply() {
-//	}
-	@Override
-	protected <T extends Animal> T getChild() {
-		return null;
-	}
-
-	@Override
 	protected boolean isReadyToMul() {
 		return false;
 	}
-
-	@Override
-	public void multiply(GameField gameField) {
-
-	}
-
 
 	@Override
 	public double getWeight() {

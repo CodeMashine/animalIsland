@@ -42,4 +42,8 @@ public class World implements GameField {
 		return animals;
 	}
 
+	public GameCell getCell(int x, int y) {
+		return grid[x][y];
+	}
+
 }

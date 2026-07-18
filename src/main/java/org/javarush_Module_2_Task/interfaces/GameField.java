@@ -7,4 +7,5 @@ public interface GameField {
 	public void setGrid(GameCell[][] grid);
 	public void showCells();
 	public GameCell[][] getGrid();
+	public GameCell getCell(int x, int y);
 }

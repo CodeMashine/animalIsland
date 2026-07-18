@@ -26,16 +26,16 @@ public class LifeCycle {
 
 		for (int i = 0; i < days; i++) {
 			System.out.println("Day " + i + "-----------------");
-			executeEatActions(executorService, Animal::eat);
-			executeMulAction(executorService, Unit::multiply);
+			executeAnimalActions(executorService, Animal::eat);
+			executeMulActions(executorService, Unit::multiply);
+			executeAnimalActions(executorService, Animal::move);
 
 		}
-
 		executorService.shutdown();
 	}
 
 
-	private void executeEatActions(ExecutorService executorService, Consumer<Animal> action) {
+	private void executeAnimalActions(ExecutorService executorService, Consumer<Animal> action) {
 		GameCell[][] grid = gameField.getGrid();
 		List<Callable<Void>> taskList = new ArrayList<>();
 		for (int x = 0; x < grid.length; x++) {
@@ -47,13 +47,12 @@ public class LifeCycle {
 						return null;
 					});
 				});
-
+				executeActions(executorService, taskList);
 			}
 		}
-		executeActions(executorService, taskList);
 	}
 
-	private void executeMulAction(ExecutorService executorService, Consumer<Unit> action) {
+	private void executeMulActions(ExecutorService executorService, Consumer<Unit> action) {
 		GameCell[][] grid = gameField.getGrid();
 		List<Callable<Void>> taskList = new ArrayList<>();
 		for (int x = 0; x < grid.length; x++) {
@@ -65,12 +64,10 @@ public class LifeCycle {
 						return null;
 					});
 				});
-
+				executeActions(executorService, taskList);
 			}
 		}
-		executeActions(executorService, taskList);
 	}
-
 
 	private void executeActions(ExecutorService executorService, List<Callable<Void>> taskList) {
 		try {
@@ -80,29 +77,5 @@ public class LifeCycle {
 			e.printStackTrace();
 		}
 	}
-
-
-	private void executeEatTasks(ExecutorService executorService) {
-		GameCell[][] grid = gameField.getGrid();
-		List<Callable<Void>> taskEat = new ArrayList<>();
-
-		for (int x = 0; x < grid.length; x++) {
-			for (int y = 0; y < grid[0].length; y++) {
-				taskEat.clear();
-				grid[x][y].getUnits().stream().filter(u -> u instanceof Animal).map(u -> (Animal) u).forEach(animal -> {
-					taskEat.add(() -> {
-						animal.eat();
-						return null;
-					});
-				});
-				try {
-					executorService.invokeAll(taskEat);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
 
 }

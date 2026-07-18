@@ -6,6 +6,8 @@ import org.javarush_Module_2_Task.interfaces.Moveble;
 import org.javarush_Module_2_Task.interfaces.Multiplyble;
 import org.javarush_Module_2_Task.interfaces.GameField;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
@@ -41,7 +43,7 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 		}
 
 		for (Unit victim : food) {
-			if (eaten >= needToEat && huntTry <= currentHuntTry) {
+			if (eaten >= needToEat || huntTry <= currentHuntTry) {
 				break;
 			}
 			int chance = getFoodList().get(victim.getClass());
@@ -50,7 +52,7 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 			if (fact < chance && cell.remove(victim)) {
 				double victimWeight = victim.getWeight();
 				eaten += victimWeight;
-				System.out.println(this + " eat " + victim + eaten + " and need" + this.getFoodNeedToEat());
+//				System.out.println(this + " eat " + victim +" eaten " +  eaten + " and need " + this.getFoodNeedToEat());
 			}
 
 			if (eaten >= needToEat) {
@@ -66,35 +68,51 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 		}
 	}
 
-
 	@Override
 	public void multiply() {
-//		GameCell currentCell = gameFiled.getCell(getX(), getY());
-//		ConcurrentLinkedDeque<Unit> units = currentCell.getUnits();
+		ConcurrentLinkedDeque<Unit> units = cell.getUnits();
 //		System.out.println(this + " try add child");
-//
-//		Animal[] animalsAnotherSexReadyToMul = units.stream().filter(
-//				u -> (this.getClass() == u.getClass() && this.getSex() != ((Animal) u).getSex())).filter(
-//				u -> ((Animal) u).isReadyToMul()).toArray(Animal[]::new);
-//
-//		boolean haveChild = false;
-//		for (Animal animal : animalsAnotherSexReadyToMul) {
-//			Unit child = gameFiled.createUnit(this.getClass(), this.getX(), this.getY());
-//			if (currentCell.add(child)) {
-//				this.daysSinceLastMull.set(0);
-//				animal.daysSinceLastMull.set(0);
-//				haveChild = true;
+
+		Animal[] animalsAnotherSexReadyToMul = units.stream().filter(
+				u -> (this.getClass() == u.getClass() && this.getSex() != ((Animal) u).getSex())).filter(
+				u -> ((Animal) u).isReadyToMul()).toArray(size -> new Animal[size]);
+
+		boolean haveChild = false;
+		for (Animal animal : animalsAnotherSexReadyToMul) {
+			if (haveChild)
+				return;
+			Unit child = this.getChild();
+			if (cell.add(child)) {
+				this.daysSinceLastMull.set(0);
+				animal.daysSinceLastMull.set(0);
+				haveChild = true;
 //				System.out.println(this + " add child");
-//			}
-//			;
-//		}
-//
-//		if (!haveChild) {
-//			this.daysSinceLastMull.incrementAndGet();
-//		}
-		System.out.println(this + " multiply");
+			}
+		}
+
+		if (!haveChild) {
+			this.daysSinceLastMull.incrementAndGet();
+		}
 	}
 
+	public void move() {
+//		if(eaten >= getFoodNeedToEat()) {
+//			return;
+//		};
+
+		List<GameCell> posibleDestCell = cell.getNeighbours();
+		GameCell currentCell = cell;
+
+		for (int i = 0 ; i < this.getSpeed() ; i++ ){
+			int posibleDestCellIndex = ThreadLocalRandom.current().nextInt(posibleDestCell.size());
+			currentCell = posibleDestCell.get(posibleDestCellIndex);
+		}
+		currentCell.add(this);
+
+
+	}
+
+	abstract protected int getSpeed();
 
 	abstract protected double getFoodNeedToEat();
 
@@ -104,7 +122,16 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 
 	abstract protected boolean isReadyToMul();
 
-	abstract protected <T extends Animal> T getChild();
+	protected Unit getChild() {
+		try {
+			SEX randomSex = ThreadLocalRandom.current().nextBoolean() ? SEX.MALE : SEX.FEMALE;
+			Unit unit = this.getClass().getDeclaredConstructor(GameCell.class, SEX.class).newInstance(cell, randomSex);
+			return unit;
+		} catch (RuntimeException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+				 IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private SEX getSex() {
 		return this.sex;

@@ -3,6 +3,9 @@ package org.javarush_Module_2_Task.clases;
 import org.javarush_Module_2_Task.interfaces.Multiplyble;
 import org.javarush_Module_2_Task.interfaces.GameField;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public abstract class Unit implements Multiplyble {
 	protected GameCell cell;
 	protected double weight;
@@ -28,6 +31,13 @@ public abstract class Unit implements Multiplyble {
 
 	@Override
 	public void multiply() {
+		try {
+			Unit unit = this.getClass().getDeclaredConstructor(GameCell.class).newInstance(cell);
+			cell.add(unit);
+		} catch (RuntimeException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+				 IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 
