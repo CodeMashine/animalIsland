@@ -1,7 +1,8 @@
-package org.javarush_Module_2_Task.service;
+package org.javarush_Module_2_Task.View;
 
 
 import org.javarush_Module_2_Task.interfaces.View;
+import org.javarush_Module_2_Task.service.Statistic;
 
 import java.util.concurrent.ConcurrentHashMap;
 

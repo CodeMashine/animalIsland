@@ -10,7 +10,7 @@ public class Statistic implements GameStatistic {
 
 	private GameField gameField;
 
-	public Statistic (GameField gameField) {
+	public Statistic(GameField gameField) {
 		this.gameField = gameField;
 	}
 
@@ -19,11 +19,23 @@ public class Statistic implements GameStatistic {
 		return map;
 	}
 
-	public void put (String key) {
-		map.merge(key, 1, Integer::sum);
+	public void put(String key) {
+		if (map.containsKey(key)) {
+			map.put(key, map.get(key) + 1);
+		}else{
+			map.put(key, 1);
+		}
 	}
 
-	public void clear () {
+	public void put(String key, int value) {
+		if (map.containsKey(key)) {
+			map.put(key, map.get(key) + value);
+		}else{
+			map.put(key, value);
+		}
+	}
+
+	public void clear() {
 		map.clear();
 	}
 }

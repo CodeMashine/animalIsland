@@ -1,17 +1,14 @@
-package org.javarush_Module_2_Task.clases;
+package org.javarush_Module_2_Task.clases.game;
+import org.javarush_Module_2_Task.clases.Animal;
 import org.javarush_Module_2_Task.interfaces.GameField;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class World implements GameField {
 	private final List<GameCell> cells = new ArrayList<>();
 	private GameCell[][] grid;
-	private final ConcurrentLinkedDeque<Unit> listOfAllUnits = new ConcurrentLinkedDeque<>();
-	private Map<Class<? extends Unit>, AtomicInteger> population = new ConcurrentHashMap<>();
+//	private final ConcurrentLinkedDeque<Unit> listOfAllUnits = new ConcurrentLinkedDeque<>();
+//	private Map<Class<? extends Unit>, AtomicInteger> population = new ConcurrentHashMap<>();
 
 	public World() {}
 
@@ -27,6 +24,9 @@ public class World implements GameField {
 	@Override
 	public void setGrid(GameCell[][] grid) {
 		this.grid = grid;
+		for (GameCell[] gameCells : grid) {
+			cells.addAll(List.of(gameCells));
+		}
 	}
 
 	@Override
@@ -34,7 +34,8 @@ public class World implements GameField {
 		return grid;
 	}
 
-	private List<Animal> getAnimals() {
+	@Override
+	public List<Animal> getAnimals() {
 		List<Animal> animals = new ArrayList<>();
 		for (GameCell cell : cells) {
 			animals.addAll(List.of(cell.getAnimals()));
@@ -45,5 +46,4 @@ public class World implements GameField {
 	public GameCell getCell(int x, int y) {
 		return grid[x][y];
 	}
-
 }

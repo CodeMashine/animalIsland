@@ -1,7 +1,6 @@
 package org.javarush_Module_2_Task.service;
 
-import org.javarush_Module_2_Task.clases.GameCell;
-import org.javarush_Module_2_Task.data.Settings;
+import org.javarush_Module_2_Task.clases.game.GameCell;
 import org.javarush_Module_2_Task.interfaces.CellConstructor;
 import org.javarush_Module_2_Task.interfaces.GameConstructor;
 import org.javarush_Module_2_Task.interfaces.GameField;
@@ -9,10 +8,6 @@ import org.javarush_Module_2_Task.interfaces.GameField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 
 public class GameCreator implements GameConstructor {
 	private final CellConstructor cellConstructor;

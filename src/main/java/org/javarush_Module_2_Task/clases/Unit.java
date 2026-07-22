@@ -1,40 +1,43 @@
 package org.javarush_Module_2_Task.clases;
 
+import org.javarush_Module_2_Task.clases.game.GameCell;
 import org.javarush_Module_2_Task.interfaces.Aging;
 import org.javarush_Module_2_Task.interfaces.Multiplyble;
-import org.javarush_Module_2_Task.interfaces.GameField;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 public abstract class Unit implements Multiplyble, Aging {
-	protected GameCell cell;
-	protected String name;
-	protected double weight;
+	public GameCell cell;
+	protected double currentWeight;
 	protected int age;
 	protected boolean isDead = false;
 
 	public Unit(GameCell cell) {
 		this.cell = cell;
+		this.currentWeight = getWeightClass();
 	}
 
-	public abstract double getWeight();
+	public  double getWeight(){
+		return currentWeight;
+	};
+
+	public abstract double getWeightClass();
 
 	public abstract String getName();
 
 	@Override
-	public void multiply() {
-		try {
-			Unit unit = this.getClass().getDeclaredConstructor(GameCell.class).newInstance(cell);
-			cell.add(unit);
-		} catch (RuntimeException | NoSuchMethodException | InvocationTargetException | InstantiationException |
-				 IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	abstract public void multiply();
 
 	@Override
 	public void getOlder() {
 		this.age += 1;
+	}
+
+	public synchronized void setWeight(double weight) {
+		this.currentWeight = weight;
+	}
+
+	public void dead() {
+//		System.out.println(this + " dead day with out food " + this.daysWOEat );
+		this.isDead = true;
+		this.cell.remove(this);
 	}
 }

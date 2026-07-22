@@ -1,35 +1,33 @@
-package org.javarush_Module_2_Task.clases;
+package org.javarush_Module_2_Task.clases.predators;
 
+import org.javarush_Module_2_Task.clases.Unit;
+import org.javarush_Module_2_Task.clases.game.GameCell;
+import org.javarush_Module_2_Task.clases.herbivore.Mouse;
 import org.javarush_Module_2_Task.data.SEX;
-import org.javarush_Module_2_Task.interfaces.GameField;
-
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Wolf extends Predator {
-
-
+public class Boa extends Predator {
 	private static AtomicInteger count = new AtomicInteger(0);
-	private final static String NAME = "Wolf";
+	private final static String NAME = "Boa";
 	private final static int MAX_AGE = 12;
 	private final static int SPEED = 3;
 	private final static int MAX_DAYS_WO_EAT = 3;
 	private final static int READY_TO_MULL_AFTER = 3;
 	private final static double NEED_TO_EAT = 3;
 	private final static double WEIGHT = 50;
-	private final static Map<Class<? extends Unit>, Integer> FOOD_LIST = Map.of(Rabbit.class, 60);
-//	private final static int HUNT_ATTEMPTS = 3;
+	private final static Map<Class<? extends Unit>, Integer> FOOD_LIST = Map.of(Mouse.class, 60);
 
 	private final int id;
-	private AtomicInteger age = new AtomicInteger(0);
 
 
-	public Wolf(GameCell cell, SEX sex) {
+	public Boa(GameCell cell, SEX sex) {
 		super(cell, sex);
 		this.id = count.incrementAndGet();
 	}
 
+	@Override
 	public String getName() {
 		return this.NAME;
 	}
@@ -40,8 +38,20 @@ public class Wolf extends Predator {
 		return SPEED;
 	}
 
-	public int getAge() {
-		return this.age.get();
+	@Override
+	public int getMaxAge() {
+		return MAX_AGE;
+	}
+
+	@Override
+	protected Unit getChild() {
+		SEX sex = ThreadLocalRandom.current().nextBoolean() ? SEX.MALE : SEX.FEMALE;
+		return new Boa(cell , sex);
+	}
+
+	@Override
+	public int getMaxDaysWOEat() {
+		return MAX_DAYS_WO_EAT;
 	}
 
 	@Override
@@ -60,13 +70,14 @@ public class Wolf extends Predator {
 	}
 
 	@Override
-	public double getWeight() {
+	public double getWeightClass(){
 		return WEIGHT;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Wolf id - %d , age %d , sex - %s , in cell - x: %d , y : %d", this.id, this.age.get(),
+		return String.format("%s id - %d , age %d , sex - %s , in cell - x: %d , y : %d",this.getName(), this.id,
+				this.age,
 				this.sex, cell.getX(), cell.getY());
 	}
 }
