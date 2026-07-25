@@ -12,14 +12,9 @@ import org.javarush_Module_2_Task.service.GameCreator;
 import org.javarush_Module_2_Task.service.LifeCycle;
 import org.javarush_Module_2_Task.service.Statistic;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 public class Main {
-	private static int width = Settings.FieldWidth;
-	private static int height = Settings.FieldHeight;
+	private static int width = Settings.fieldWidth;
+	private static int height = Settings.fieldHeight;
 
 	public static void main(String[] args) {
 		GameField gameField = new World() ;

@@ -4,8 +4,4 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface GameStatistic {
 	public ConcurrentHashMap<String, Integer>  getStatistic();
-
-
-
-
 }

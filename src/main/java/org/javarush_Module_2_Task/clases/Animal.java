@@ -1,39 +1,47 @@
 package org.javarush_Module_2_Task.clases;
 
 import org.javarush_Module_2_Task.clases.game.GameCell;
-import org.javarush_Module_2_Task.data.SEX;
+import org.javarush_Module_2_Task.clases.plant.Grass;
+import org.javarush_Module_2_Task.data.Settings;
+import org.javarush_Module_2_Task.interfaces.Aging;
 import org.javarush_Module_2_Task.interfaces.Eating;
 import org.javarush_Module_2_Task.interfaces.Moveble;
 import org.javarush_Module_2_Task.interfaces.Multiplyble;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Animal extends Unit implements Moveble, Multiplyble, Eating {
-	protected final SEX sex;
+public abstract class Animal extends Unit implements Moveble, Multiplyble, Eating, Aging {
+	protected final int SPEED;
+	protected final int MAX_DAYS_WO_EAT;
+	protected final double NEED_TO_EAT_ONE_UNIT;
+	protected final Map<Class<? extends Unit>, Integer> FOOD_LIST;
+
+
 	protected AtomicInteger daysSinceLastMull = new AtomicInteger(0);
 	protected int daysWOEat = 0;
 	protected double eaten = 0;
-	protected boolean isDead = false;
 
 
-	public Animal(GameCell cell, SEX sex) {
-		super(cell);
-		this.sex = sex;
+	public Animal(GameCell cell, String name, double weightOneUnit, int flockSize, int speed, int maxDaysWOEat, double needToEatOneUnit, Map<Class<? extends Unit>, Integer> foodList) {
+		super(cell, name, weightOneUnit, flockSize);
+		FOOD_LIST = foodList;
+		SPEED = speed;
+		MAX_DAYS_WO_EAT = maxDaysWOEat;
+		NEED_TO_EAT_ONE_UNIT = needToEatOneUnit;
 	}
 
 	@Override
 	public void eat() {
-		int currentHuntTry = 0;
-		int huntTry = getHuntTry();
-		double needToEat = getFoodNeedToEat();
+		double needToEat = getFoodAmountNeedToEat();
 
 		ConcurrentLinkedDeque<Unit> units = cell.getUnits();
-		Unit[] food = units.stream().filter(u -> getFoodList().containsKey(u.getClass())).toArray(
-				size -> new Unit[size]);
+		Unit[] food = units.stream().filter(u -> FOOD_LIST.containsKey(u.getClass())).toArray(size -> new Unit[size]);
 
 		if (food.length == 0) {
 			daysWOEat += 1;
@@ -41,121 +49,116 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 		}
 
 		for (Unit victim : food) {
-			if (eaten >= needToEat || huntTry <= currentHuntTry) {
+			if (eaten >= needToEat) {
 				break;
 			}
-			int chance = getFoodList().get(victim.getClass());
+			int chance = FOOD_LIST.get(victim.getClass());
 			int fact = ThreadLocalRandom.current().nextInt(100);
 
 			if (fact < chance && cell.getUnits().contains(victim)) {
 				double victimWeight = victim.getWeight();
-				victimWeight -= needToEat;
 				if (victimWeight > needToEat) {
 					eaten += needToEat;
 					double delta = victimWeight - needToEat;
 					victim.setWeight(delta);
-				}else{
+				} else {
+					eaten += victimWeight;
 					victim.dead();
-
 				}
-//				System.out.println(this + " eat " + victim +" eaten " +  eaten + " and need " + this.getFoodNeedToEat());
 			}
-
-			if (eaten >= needToEat) {
-				break;
-			}
-			currentHuntTry += 1;
 		}
 
-		if (eaten >= getFoodNeedToEat()) {
-			daysWOEat = 0;
-		} else if (eaten == 0) {
+		if (eaten <= needToEat / 2) {
 			daysWOEat += 1;
+		} else {
+			daysWOEat = 0;
 		}
 	}
 
 	@Override
 	public void multiply() {
-		if (daysWOEat > 2) {
+		if (daysWOEat > MAX_DAYS_WO_EAT) {
 			return;
 		}
-		ConcurrentLinkedDeque<Unit> units = cell.getUnits();
-//		System.out.println(this + " try add child");
+		double nextWeight = currentWeight * 2;
+		double maxWeight = getMaxWeight();
 
-		Animal[] animalsAnotherSexReadyToMul = units.stream().filter(
-				u -> (this.getClass() == u.getClass() && this.getSex() != ((Animal) u).getSex())).filter(
-				u -> ((Animal) u).isReadyToMul()).toArray(size -> new Animal[size]);
-
-		boolean haveChild = false;
-		for (Animal animal : animalsAnotherSexReadyToMul) {
-			if (haveChild) {
-				return;
-			}
+		if (nextWeight > maxWeight) {
+			setWeight(maxWeight);
 			Unit child = this.getChild();
-			if (cell.add(child)) {
-				this.daysSinceLastMull.set(0);
-				animal.daysSinceLastMull.set(0);
-				haveChild = true;
-//				System.out.println(this + " add child");
-			}
-		}
 
-		if (!haveChild) {
-			this.daysSinceLastMull.incrementAndGet();
+			if (!cell.add(child)) {
+				if (child instanceof Moveble moveble) {
+					moveble.move();
+				}
+			}
+		} else {
+			setWeight(nextWeight);
 		}
 	}
 
 	@Override
 	public void move() {
-		if (eaten >= getFoodNeedToEat()) {
+		if (eaten >= getFoodAmountNeedToEat()) {
 			return;
 		}
 
-		for (int i = 0; i < this.getSpeed(); i++) {
-			List<GameCell> posibleDestCells = cell.getNeighbours();
-			int possibleDestCellIndex = ThreadLocalRandom.current().nextInt(posibleDestCells.size());
-			GameCell nextCell = posibleDestCells.get(possibleDestCellIndex);
+		GameCell startCell = cell;
+
+		Set<GameCell> visitedCells = new HashSet<>();
+		visitedCells.add(cell);
+
+		List<GameCell> possibleDestCells = cell.getNeighbours();
+
+		for (int i = 0; i < this.SPEED; i++) {
+			if (possibleDestCells.isEmpty()) {
+				return;
+			}
+			int possibleDestCellIndex = ThreadLocalRandom.current().nextInt(possibleDestCells.size());
+			GameCell nextCell = possibleDestCells.remove(possibleDestCellIndex);
+			if (visitedCells.contains(nextCell)) {
+				i -= 1;
+				continue;
+			}
 
 			if (nextCell.add(this)) {
+				visitedCells.add(nextCell);
 				this.cell.remove(this);
 				this.cell = nextCell;
-//			System.out.println(this + " go from " + previousCell +  " to " + currentCell);
+
+				for (Unit init : cell.getUnits()) {
+					if (FOOD_LIST.containsKey(init.getClass())) {
+						return;
+					}
+				}
+
+				possibleDestCells = cell.getNeighbours();
+
+
 			}
 		}
+//		System.out.println(this + " go from " + startCell + " to " + cell);
 	}
 
-	abstract protected int getSpeed();
-
-	abstract protected double getFoodNeedToEat();
-
-	abstract protected Map<Class<? extends Unit>, Integer> getFoodList();
-
-	abstract protected int getHuntTry();
-
-	abstract protected boolean isReadyToMul();
-
-	abstract protected Unit getChild();
-
-	private SEX getSex() {
-		return this.sex;
-	}
-
-	abstract public int getMaxDaysWOEat();
-
-	abstract public int getMaxAge();
 
 	@Override
 	public void getOlder() {
-		super.getOlder();
-		this.eaten = 0;
-		this.daysSinceLastMull.incrementAndGet();
-		if (this.daysWOEat == this.getMaxDaysWOEat() || this.age == this.getMaxAge()) {
-			this.dead();
+		eaten = 0;
+		if (daysWOEat >= MAX_DAYS_WO_EAT) {
+			double nextWeight = currentWeight * Settings.weightLossCoefficient;
+			setWeight(nextWeight);
 		}
 	}
 
 
+	private double getFoodAmountNeedToEat() {
+		return FLOCK_SIZE * NEED_TO_EAT_ONE_UNIT;
+	}
 
+	abstract public Unit getChild();
 
+//	abstract public int getMaxDaysWOEat();
+
+//	abstract public int getMaxAge();
 
 }

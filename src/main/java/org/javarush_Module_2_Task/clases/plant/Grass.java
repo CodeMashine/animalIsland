@@ -1,45 +1,30 @@
 package org.javarush_Module_2_Task.clases.plant;
 
-import org.javarush_Module_2_Task.clases.Unit;
 import org.javarush_Module_2_Task.clases.game.GameCell;
-import org.javarush_Module_2_Task.interfaces.Massive;
 
-public class Grass extends Plant implements Massive {
+public class Grass extends Plant {
+
 	private final static String NAME = "Grass";
-	private final static double WEIGHT = 1.0;
+	private final static double WEIGHT_ONE_UNIT = 1.0;
+	private final static int FLOCK_SIZE = 500;
 
 	public Grass(GameCell cell) {
-		super(cell);
-	}
-
-	@Override
-	public void dead() {
-	}
-
-	@Override
-	public String getName() {
-		return this.NAME;
-	}
-
-	@Override
-	public double getWeightClass(){
-		return WEIGHT;
+		super(cell, NAME, WEIGHT_ONE_UNIT, FLOCK_SIZE);
 	}
 
 	@Override
 	public void multiply() {
-		Unit child = new Grass(cell);
-		cell.add(child);
-	}
+		double nextWeight = currentWeight * 2;
+		double maxWeight = getMaxWeight();
 
-	@Override
-	public void getOlder() {
-		return;
-	}
+		if (currentWeight == maxWeight) {
+			return;
+		}
 
-	@Override
-	public String toString() {
-		return "Grass{" + "x=" + cell.getX() + ", y=" + cell.getY() + '}';
+		if (nextWeight > maxWeight) {
+			setWeight(maxWeight);
+		} else {
+			setWeight(nextWeight);
+		}
 	}
-
 }

@@ -5,18 +5,17 @@ import org.javarush_Module_2_Task.clases.game.GameCell;
 import org.javarush_Module_2_Task.clases.Unit;
 import org.javarush_Module_2_Task.data.Settings;
 import org.javarush_Module_2_Task.interfaces.GameField;
-import org.javarush_Module_2_Task.interfaces.Massive;
 import org.javarush_Module_2_Task.interfaces.View;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class LifeCycle {
@@ -33,23 +32,26 @@ public class LifeCycle {
 
 	public void start() {
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		ExecutorService executorService = Executors.newFixedThreadPool(Settings.threadsAmount);
 		scheduler.scheduleWithFixedDelay(() -> {
 			if (isGameOver()) {
+				executorService.shutdown();
 				scheduler.shutdown();
+				return;
 			}
 			;
-			process();
+			process(executorService);
 		}, 0, 1, TimeUnit.SECONDS);
 
 	}
 
 
-	private void process() {
-		ExecutorService executorService = Executors.newFixedThreadPool(Settings.ThreadsAmount);
+	private void process(ExecutorService executorService) {
+//		ExecutorService executorService = Executors.newFixedThreadPool(Settings.ThreadsAmount);
 		System.out.println("Day " + ++days + "-----------------");
-//			executeStatisticAction(executorService);
+		executeStatisticAction3(executorService);
 //			executeStatisticAction2(executorService);
-		executeStatisticAction2();
+//		executeStatisticAction2();
 		view.display(statistic);
 		executeEatActions(executorService);
 		executeMulActions(executorService);
@@ -57,20 +59,30 @@ public class LifeCycle {
 		executeGetOlderActions(executorService);
 		statistic.clear();
 
-		executorService.shutdown();
+//		executorService.shutdown();
 	}
 
 	private boolean isGameOver() {
-		return gameField.getAnimals().isEmpty();
-	}
+		Set<Class<? extends Unit>> units = new HashSet<>();
 
-	private void executeGetOlderActions(ExecutorService executorService) {
-		executeUnitActions(executorService, Unit::getOlder);
-	}
+		GameCell[][] grid = gameField.getGrid();
 
+		for (GameCell[] cells : grid) {
+			for (GameCell cell : cells) {
+//				System.out.println(cell);
+			}
+		}
+
+		return false;
+	}
 
 	private void executeEatActions(ExecutorService executorService) {
 		executeAnimalActions(executorService, Animal::eat);
+	}
+
+	private void executeGetOlderActions(ExecutorService executorService) {
+		Consumer<Unit> consumer = unit -> {unit.getOlder();};
+		executeUnitActions(executorService, Unit::getOlder);
 	}
 
 	private void executeMulActions(ExecutorService executorService) {
@@ -83,6 +95,13 @@ public class LifeCycle {
 
 	private void executeStatisticAction(ExecutorService executorService) {
 		Consumer<Unit> statAction = u -> statistic.put(u.getName());
+		executeUnitActions(executorService, statAction);
+	}
+
+	private void executeStatisticAction3(ExecutorService executorService) {
+		Consumer<Unit> statAction = u -> {
+			statistic.put(u.getName(), u.getCurrentFlockSize());
+		};
 		executeUnitActions(executorService, statAction);
 	}
 
@@ -118,24 +137,23 @@ public class LifeCycle {
 //			}
 //		}
 //	}
-	private void executeStatisticAction2() {
-		GameCell[][] grid = gameField.getGrid();
-		List<Callable<Void>> taskList = new ArrayList<>();
-		for (int x = 0; x < grid.length; x++) {
-			for (int y = 0; y < grid[0].length; y++) {
-				final Map<Class<? extends Unit>, AtomicInteger> currentCountOfUnits = grid[x][y].getCurrentCountOfUnits();
-				for (Map.Entry<Class<? extends Unit>, AtomicInteger> unitClass : currentCountOfUnits.entrySet()) {
-					int amount = unitClass.getValue().get();
-					Class<? extends Unit> currentUnit = unitClass.getKey();
-					String name = currentUnit.getSimpleName();
-					if (Massive.class.isAssignableFrom(currentUnit)) {
-//						currentUnit.
-					}
-					statistic.put(name, amount);
-				}
-			}
-		}
-	}
+//	private void executeStatisticAction2() {
+//		GameCell[][] grid = gameField.getGrid();
+//		List<Callable<Void>> taskList = new ArrayList<>();
+//		for (int x = 0; x < grid.length; x++) {
+//			for (int y = 0; y < grid[0].length; y++) {
+//				final Map<Class<? extends Unit>, AtomicInteger> currentCountOfUnits = grid[x][y].getCurrentCountOfUnits();
+//				for (Map.Entry<Class<? extends Unit>, AtomicInteger> unitClass : currentCountOfUnits.entrySet()) {
+//					int amount = unitClass.getValue().get();
+//					Class<? extends Unit> currentUnit = unitClass.getKey();
+//					String name = currentUnit.getSimpleName();
+//					if (Massive.class.isAssignableFrom(currentUnit)) {
+//					}
+//					statistic.put(name, amount);
+//				}
+//			}
+//		}
+//	}
 
 
 	private void executeAnimalActions(ExecutorService executorService, Consumer<Animal> action) {
@@ -173,7 +191,6 @@ public class LifeCycle {
 		}
 
 	}
-
 
 	private void executeActions(ExecutorService executorService, List<Callable<Void>> taskList) {
 		try {

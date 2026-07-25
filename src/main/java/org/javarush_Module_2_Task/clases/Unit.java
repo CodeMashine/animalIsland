@@ -4,40 +4,66 @@ import org.javarush_Module_2_Task.clases.game.GameCell;
 import org.javarush_Module_2_Task.interfaces.Aging;
 import org.javarush_Module_2_Task.interfaces.Multiplyble;
 
-public abstract class Unit implements Multiplyble, Aging {
-	public GameCell cell;
-	protected double currentWeight;
-	protected int age;
-	protected boolean isDead = false;
+public abstract class Unit implements Multiplyble , Aging {
+	protected final String NAME;
+	protected final double WEIGHT_ONE_UNIT;
+	protected final int FLOCK_SIZE;
 
-	public Unit(GameCell cell) {
+	public GameCell cell;
+	protected double currentWeight ;
+//	protected boolean isDead = false;
+
+	public Unit(GameCell cell, String name, double weightOneUnit, int FLOCK_SIZE) {
 		this.cell = cell;
-		this.currentWeight = getWeightClass();
+		this.NAME = name;
+		this.WEIGHT_ONE_UNIT = weightOneUnit;
+		this.FLOCK_SIZE = FLOCK_SIZE;
+		currentWeight = WEIGHT_ONE_UNIT;
 	}
 
-	public  double getWeight(){
+	public double getWeight() {
 		return currentWeight;
+	}
+
+	public double getWeightOneUnit() {
+		return WEIGHT_ONE_UNIT;
+	}
+
+	public double getMaxWeight() {
+		return FLOCK_SIZE * WEIGHT_ONE_UNIT;
+	}
+
+	public int getFlockSize(){
+		return FLOCK_SIZE;
 	};
 
-	public abstract double getWeightClass();
+	public String getName(){
+		return NAME;
+	};
 
-	public abstract String getName();
+	public synchronized  int getCurrentFlockSize() {
+		return (int) Math.round(currentWeight / WEIGHT_ONE_UNIT);
+	}
 
 	@Override
 	abstract public void multiply();
 
-	@Override
-	public void getOlder() {
-		this.age += 1;
-	}
-
 	public synchronized void setWeight(double weight) {
-		this.currentWeight = weight;
+		if (weight <= WEIGHT_ONE_UNIT) {
+			this.dead();
+		}else{
+			this.currentWeight = weight;
+		}
 	}
 
-	public void dead() {
-//		System.out.println(this + " dead day with out food " + this.daysWOEat );
-		this.isDead = true;
+	public synchronized void dead() {
+//		this.isDead = true;
 		this.cell.remove(this);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s , in cell - x: %d , y : %d", this.getName(),
+				cell.getX(), cell.getY());
 	}
 }
