@@ -30,10 +30,7 @@ public class Statistic implements GameStatistic {
 	public void put(String key, int value) {
 		if (map.containsKey(key)) {
 			map.put(key, map.get(key) + value);
-//		} else if (value == 0) {  // какои то костыль
-//			return;
-		}
-		else {
+		} else {
 			map.put(key, value);
 		}
 	}

@@ -5,5 +5,4 @@ public interface Settings {
 	int fieldWidth = 100;
 	int fieldHeight = 20;
 	double weightLossCoefficient = 0.3 ;
-
 }

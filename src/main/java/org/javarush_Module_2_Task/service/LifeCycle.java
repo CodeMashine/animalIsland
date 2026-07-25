@@ -105,57 +105,6 @@ public class LifeCycle {
 		executeUnitActions(executorService, statAction);
 	}
 
-
-//	private void executeStatisticAction2(ExecutorService executorService) {
-//		GameCell[][] grid = gameField.getGrid();
-//		List<Callable<Void>> taskList = new ArrayList<>();
-//		for (int x = 0; x < grid.length; x++) {
-//			for (int y = 0; y < grid[0].length; y++) {
-//				grid[x][y].getUnits().forEach(u -> {
-//					statistic.put(u.getName());
-//				});
-//
-
-	//			grid[x][y].getCurrentCountOfUnits().forEach((u, c) -> {
-	//					taskList.add(() -> {
-	//						statistic.put(u.getSimpleName(), c.get());
-	//						return null;
-	//					});
-	//				});
-//				final Map<Class<? extends Unit>, AtomicInteger> currentCountOfUnits = grid[x][y].getCurrentCountOfUnits();
-//
-//				taskList.add(() -> {
-//					for (Map.Entry<Class<? extends Unit>, AtomicInteger> unitClass : currentCountOfUnits.entrySet()) {
-//						int amount = unitClass.getValue().get();
-//						String name = unitClass.getKey().getSimpleName();
-//						statistic.put(name, amount);
-//					}
-//					return null;
-//				});
-//
-//				executeActions(executorService, taskList);
-//			}
-//		}
-//	}
-//	private void executeStatisticAction2() {
-//		GameCell[][] grid = gameField.getGrid();
-//		List<Callable<Void>> taskList = new ArrayList<>();
-//		for (int x = 0; x < grid.length; x++) {
-//			for (int y = 0; y < grid[0].length; y++) {
-//				final Map<Class<? extends Unit>, AtomicInteger> currentCountOfUnits = grid[x][y].getCurrentCountOfUnits();
-//				for (Map.Entry<Class<? extends Unit>, AtomicInteger> unitClass : currentCountOfUnits.entrySet()) {
-//					int amount = unitClass.getValue().get();
-//					Class<? extends Unit> currentUnit = unitClass.getKey();
-//					String name = currentUnit.getSimpleName();
-//					if (Massive.class.isAssignableFrom(currentUnit)) {
-//					}
-//					statistic.put(name, amount);
-//				}
-//			}
-//		}
-//	}
-
-
 	private void executeAnimalActions(ExecutorService executorService, Consumer<Animal> action) {
 		GameCell[][] grid = gameField.getGrid();
 		List<Callable<Void>> taskList = new ArrayList<>();
