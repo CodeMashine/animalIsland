@@ -139,7 +139,7 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 	}
 
 	private double getFoodAmountNeedToEat() {
-		return FLOCK_SIZE * NEED_TO_EAT_ONE_UNIT;
+		return getCurrentFlockSize() * NEED_TO_EAT_ONE_UNIT;
 	}
 
 	abstract public Unit getChild();

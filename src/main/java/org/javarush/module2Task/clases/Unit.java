@@ -4,12 +4,12 @@ import org.javarush.module2Task.clases.game.GameCell;
 import org.javarush.module2Task.interfaces.Aging;
 import org.javarush.module2Task.interfaces.Multiplyble;
 
-public abstract class Unit implements Multiplyble , Aging {
+public abstract class Unit implements Multiplyble, Aging {
 	protected final String NAME;
 	protected final double WEIGHT_ONE_UNIT;
 	protected final int FLOCK_SIZE;
 	public GameCell cell;
-	protected double currentWeight ;
+	protected double currentWeight;
 
 	public Unit(GameCell cell, String name, double weightOneUnit, int FLOCK_SIZE) {
 		this.cell = cell;
@@ -31,15 +31,15 @@ public abstract class Unit implements Multiplyble , Aging {
 		return FLOCK_SIZE * WEIGHT_ONE_UNIT;
 	}
 
-	public int getFlockSize(){
+	public int getFlockSize() {
 		return FLOCK_SIZE;
 	}
 
-	public String getName(){
+	public String getName() {
 		return NAME;
 	}
 
-	public synchronized  int getCurrentFlockSize() {
+	public synchronized int getCurrentFlockSize() {
 		return (int) Math.round(currentWeight / WEIGHT_ONE_UNIT);
 	}
 
@@ -47,9 +47,9 @@ public abstract class Unit implements Multiplyble , Aging {
 	abstract public void multiply();
 
 	public synchronized void setWeight(double weight) {
-		if (weight <= WEIGHT_ONE_UNIT) {
+		if (weight < WEIGHT_ONE_UNIT) {
 			this.dead();
-		}else{
+		} else {
 			this.currentWeight = weight;
 		}
 	}
@@ -60,7 +60,6 @@ public abstract class Unit implements Multiplyble , Aging {
 
 	@Override
 	public String toString() {
-		return String.format("%s , in cell - x: %d , y : %d", this.getName(),
-				cell.getX(), cell.getY());
+		return String.format("%s , in cell - x: %d , y : %d", this.getName(), cell.getX(), cell.getY());
 	}
 }
