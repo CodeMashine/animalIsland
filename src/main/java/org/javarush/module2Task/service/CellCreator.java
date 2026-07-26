@@ -28,7 +28,7 @@ public class CellCreator implements CellConstructor {
 			try {
 				Field flockSizeField = unitClass.getDeclaredField("FLOCK_SIZE");
 				flockSizeField.setAccessible(true);
-				int flockSize = (Integer) flockSizeField.get(null);
+				int flockSize = flockSizeField.getInt(null);
 				int unitAmount = ThreadLocalRandom.current().nextInt(maxValue);
 				int flockAmount = (unitAmount + flockSize - 1) / flockSize;
 
