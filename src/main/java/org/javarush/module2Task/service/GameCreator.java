@@ -33,13 +33,13 @@ public class GameCreator implements GameConstructor {
 		}
 
 		Arrays.stream(gameCellsGrid).flatMap(Arrays::stream).forEach(cell -> {
-			List<GameCell> neighbours = getNeighbours(cell.getX(), cell.getY(), height, width, gameCellsGrid);
+			List<GameCell> neighbours = getNeighbours(cell.getX(), cell.getY(), width, height, gameCellsGrid);
 			cell.setNeighbours(neighbours);
 		});
 		return gameCellsGrid;
 	}
 
-	private List<GameCell> getNeighbours(int x, int y, int height, int width, GameCell[][] gameCellsGrid) {
+	private List<GameCell> getNeighbours(int x, int y, int width, int height, GameCell[][] gameCellsGrid) {
 		List<GameCell> neighbours = new ArrayList<>();
 		if (x - 1 >= 0) {
 			neighbours.add(gameCellsGrid[x - 1][y]);
@@ -56,7 +56,7 @@ public class GameCreator implements GameConstructor {
 		if (y + 1 < height && x + 1 < width) {
 			neighbours.add(gameCellsGrid[x + 1][y + 1]);
 		}
-		if (x - 1 >= width && y + 1 < height) {
+		if (x - 1 >= 0 && y + 1 < height) {
 			neighbours.add(gameCellsGrid[x - 1][y + 1]);
 		}
 		if (x - 1 >= 0 && y - 1 >= 0) {

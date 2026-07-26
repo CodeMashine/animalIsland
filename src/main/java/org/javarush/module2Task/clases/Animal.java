@@ -63,7 +63,7 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 			}
 		}
 
-		if (eaten <= needToEat / 2) {
+		if (eaten < needToEat / 2) {
 			daysWOEat += 1;
 		} else {
 			daysWOEat = 0;
