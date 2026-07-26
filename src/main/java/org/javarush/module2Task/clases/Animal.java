@@ -80,12 +80,10 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 
 		if (nextWeight > maxWeight) {
 			setWeight(maxWeight);
-			Unit child = this.getChild();
+			Animal child = this.getChild();
 
 			if (!cell.add(child)) {
-				if (child instanceof Moveble moveble) {
-					moveble.move();
-				}
+					child.move();
 			}
 		} else {
 			setWeight(nextWeight);
@@ -142,5 +140,5 @@ public abstract class Animal extends Unit implements Moveble, Multiplyble, Eatin
 		return getCurrentFlockSize() * NEED_TO_EAT_ONE_UNIT;
 	}
 
-	abstract public Unit getChild();
+	abstract public Animal getChild();
 }

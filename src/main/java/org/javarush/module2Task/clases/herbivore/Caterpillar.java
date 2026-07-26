@@ -1,5 +1,6 @@
 package org.javarush.module2Task.clases.herbivore;
 
+import org.javarush.module2Task.clases.Animal;
 import org.javarush.module2Task.clases.game.GameCell;
 import org.javarush.module2Task.clases.plant.Grass;
 import org.javarush.module2Task.clases.Unit;
@@ -20,7 +21,7 @@ public class Caterpillar extends Herbivore {
 		super(cell,NAME , WEIGHT_ONE_UNIT ,FLOCK_SIZE ,SPEED, MAX_DAYS_WO_EAT ,NEED_TO_EAT_ONE_UNIT ,FOOD_LIST );
 	}
 
-	public Unit getChild() {
+	public Animal getChild() {
 		return new Caterpillar(cell);
 	}
 }

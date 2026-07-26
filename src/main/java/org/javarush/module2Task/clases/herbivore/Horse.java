@@ -1,5 +1,6 @@
 package org.javarush.module2Task.clases.herbivore;
 
+import org.javarush.module2Task.clases.Animal;
 import org.javarush.module2Task.clases.game.GameCell;
 import org.javarush.module2Task.clases.plant.Grass;
 import org.javarush.module2Task.clases.Unit;
@@ -21,7 +22,7 @@ public class Horse extends Herbivore {
 	}
 
 	@Override
-	public Unit getChild() {
+	public Animal getChild() {
 		return new Horse(cell);
 	}
 }

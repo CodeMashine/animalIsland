@@ -1,8 +1,8 @@
 package org.javarush.module2Task.clases.predators;
 
+import org.javarush.module2Task.clases.Animal;
 import org.javarush.module2Task.clases.Unit;
 import org.javarush.module2Task.clases.game.GameCell;
-//import org.javarush_Module_2_Task.clases.herbivore.Mouse;
 import org.javarush.module2Task.clases.herbivore.Duck;
 import org.javarush.module2Task.clases.herbivore.Mouse;
 import org.javarush.module2Task.clases.herbivore.Rabbit;
@@ -24,7 +24,7 @@ public class Boa extends Predator {
 	}
 
 	@Override
-	public Unit getChild() {
+	public Animal getChild() {
 		return new Boa(cell);
 	}
 }

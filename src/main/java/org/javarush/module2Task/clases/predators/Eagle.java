@@ -1,5 +1,6 @@
 package org.javarush.module2Task.clases.predators;
 
+import org.javarush.module2Task.clases.Animal;
 import org.javarush.module2Task.clases.Unit;
 import org.javarush.module2Task.clases.game.GameCell;
 import org.javarush.module2Task.clases.herbivore.Duck;
@@ -22,7 +23,7 @@ public class Eagle extends Predator {
 	}
 
 	@Override
-	public Unit getChild() {
+	public Animal getChild() {
 		return new Eagle(cell);
 	}
 }
