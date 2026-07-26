@@ -10,6 +10,7 @@ public abstract class Unit implements Multiplyble, Aging {
 	protected final int FLOCK_SIZE;
 	public GameCell cell;
 	protected double currentWeight;
+	protected boolean isDead = false;
 
 	public Unit(GameCell cell, String name, double weightOneUnit, int FLOCK_SIZE) {
 		this.cell = cell;
@@ -55,6 +56,7 @@ public abstract class Unit implements Multiplyble, Aging {
 	}
 
 	public synchronized void dead() {
+		this.isDead = true ;
 		this.cell.remove(this);
 	}
 
